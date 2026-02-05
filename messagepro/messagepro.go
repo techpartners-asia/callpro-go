@@ -1,6 +1,7 @@
 package messagepro
 
 import (
+	"bytes"
 	"crypto/tls"
 	"encoding/json"
 	"errors"
@@ -96,6 +97,32 @@ func (m *messagepro) MessageFetch(phone, text string) (response string, err erro
 	if err != nil {
 		return
 	}
+	responseByte, _ := io.ReadAll(res.Body)
+	if res.StatusCode != 200 {
+		err = errors.New(string(responseByte))
+		fmt.Println(err.Error())
+		return
+	}
+	defer res.Body.Close()
+	response = string(responseByte)
+	return
+}
+
+func (m *messagepro) OrderCampaign(body *OrderCampaignRequest) (response string, err error) {
+
+	var requestByte []byte
+	var requestBody *bytes.Reader
+	if body == nil {
+		requestBody = bytes.NewReader(nil)
+	} else {
+		requestByte, _ = json.Marshal(body)
+		requestBody = bytes.NewReader(requestByte)
+	}
+	req, _ := http.NewRequest(http.MethodPost, m.endpoint+"/order-campaign", requestBody)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("x-api-key", m.apikey)
+
+	res, err := http.DefaultClient.Do(req)
 	responseByte, _ := io.ReadAll(res.Body)
 	if res.StatusCode != 200 {
 		err = errors.New(string(responseByte))

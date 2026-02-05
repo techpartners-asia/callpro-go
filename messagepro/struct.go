@@ -28,4 +28,15 @@ type (
 	// 	To   string `json:"to"`
 	// 	Text string `json:"text"`
 	// }
+
+	OrderCampaignRequest struct {
+		Name        string      `json:"name"`
+		IsWithText  int         `json:"isWithText"` // 0 эсвэл 1 /0 үед олон дугаар луу нэг текст илгээнэ, 1 үед нэг текстийг нэг дугаар луу илгээнэ/
+		Text        string      `json:"text"`
+		From        string      `json:"from"`
+		BeginDate   string      `json:"begin_date"`
+		BeginHour   string      `json:"begin_hour"`
+		BeginMinute string      `json:"begin_minute"`
+		Numbers     interface{} `json:"numbers"`
+	}
 )
